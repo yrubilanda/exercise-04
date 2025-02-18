@@ -197,7 +197,122 @@ chr (1): words
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>solution_test <span class="ot">&lt;-</span> <span class="fu">pick_solution</span>(solution_list)</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(solution_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "P" "A" "N" "E" "L"</code></pre>
+<pre><code>[1] "B" "L" "U" "E" "S"</code></pre>
+</div>
+</div>
+</section>
+<section id="step-4-the-wordle-game" class="level3">
+<h3 class="anchored" data-anchor-id="step-4-the-wordle-game">Step 4: THE WORDLE GAME</h3>
+<p>Websites used: https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/cat https://www.geeksforgeeks.org/r-program-to-print-a-new-line-in-string/ https://stackoverflow.com/questions/73523520/guessing-game-in-r https://www.programiz.com/r/repeat-loop</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#this function takes three arguments: 1) the solution, 2) valid guesses, and 3) number of guesses allowed</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>play_wordle <span class="ot">&lt;-</span> <span class="cf">function</span>(solution, valid_list, <span class="at">num_guesses =</span> <span class="dv">6</span>){</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"Welcome to Wordle</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"You have"</span>, num_guesses, <span class="st">"chances to guess a word of length"</span>, <span class="fu">nchar</span>(solution), <span class="st">".</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  letters_left <span class="ot">&lt;-</span> letters</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  guess_history <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  test_guesses <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"apple"</span>, <span class="st">"grape"</span>, <span class="st">"peach"</span>, <span class="st">"melon"</span>, <span class="st">"berry"</span>, <span class="st">"table"</span>)  <span class="co"># Example guesses</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>num_guesses) {</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Attempt"</span>, i, <span class="st">"of"</span>, num_guesses, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"Letters left:"</span>, <span class="fu">paste</span>(letters_left, <span class="at">collapse =</span> <span class="st">" "</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Instead of readline(), use predefined test guesses</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>    guess <span class="ot">&lt;-</span> test_guesses[i]</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"Guess:"</span>, guess, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)  <span class="co"># Show the test guess</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">nchar</span>(guess) <span class="sc">!=</span> <span class="fu">nchar</span>(solution)) {</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cat</span>(<span class="st">"Invalid guess. Your word must be"</span>, <span class="fu">nchar</span>(solution), <span class="st">"letters long.</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (<span class="sc">!</span>(guess <span class="sc">%in%</span> valid_list)) {</span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cat</span>(<span class="st">"Invalid guess. Word not in valid list.</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>      guess_history <span class="ot">&lt;-</span> <span class="fu">c</span>(guess_history, guess)</span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>      feedback <span class="ot">&lt;-</span> <span class="fu">evaluate_guess</span>(guess, solution)</span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cat</span>(<span class="st">"Feedback:"</span>, feedback, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>      letters_left <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(letters_left, <span class="fu">strsplit</span>(guess, <span class="st">""</span>)[[<span class="dv">1</span>]])</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (guess <span class="sc">==</span> solution) {</span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>        <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Congratulations! You guessed the word!</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>        <span class="fu">print</span>(guess_history)</span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a>        <span class="fu">return</span>(<span class="cn">TRUE</span>)</span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Game over! The correct word was:"</span>, solution, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(guess_history)</span>
+<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="cn">FALSE</span>)</span>
+<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>evaluate_guess <span class="ot">&lt;-</span> <span class="cf">function</span>(guess, solution) {</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Create an empty feedback list with "-"</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  feedback <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="st">"-"</span>, <span class="fu">nchar</span>(solution))</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Convert words into character vectors</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  guess_letters <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(guess, <span class="st">""</span>)[[<span class="dv">1</span>]]</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  solution_letters <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(solution, <span class="st">""</span>)[[<span class="dv">1</span>]]</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Check for correct letters in correct positions</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(solution_letters)) {</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (guess_letters[i] <span class="sc">==</span> solution_letters[i]) {</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>      feedback[i] <span class="ot">&lt;-</span> <span class="st">"*"</span>  <span class="co"># Correct letter, correct position</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (guess_letters[i] <span class="sc">%in%</span> solution_letters) {</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>      feedback[i] <span class="ot">&lt;-</span> <span class="st">"+"</span>  <span class="co"># Correct letter, wrong position</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Convert feedback list to a string</span></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">paste</span>(feedback, <span class="at">collapse =</span> <span class="st">" "</span>))</span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pick a random solution word from your solution_list</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>solution_word <span class="ot">&lt;-</span> <span class="fu">sample</span>(solution_list, <span class="dv">1</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Start the game</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fu">play_wordle</span>(solution_word, valid_list, <span class="at">num_guesses =</span> <span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Welcome to Wordle
+You have 6 chances to guess a word of length 9 .
+
+Attempt 1 of 6 
+Letters left: a b c d e f g h i j k l m n o p q r s t u v w x y z 
+Guess: apple 
+Invalid guess. Your word must be 9 letters long.
+
+Attempt 2 of 6 
+Letters left: a b c d e f g h i j k l m n o p q r s t u v w x y z 
+Guess: grape 
+Invalid guess. Your word must be 9 letters long.
+
+Attempt 3 of 6 
+Letters left: a b c d e f g h i j k l m n o p q r s t u v w x y z 
+Guess: peach 
+Invalid guess. Your word must be 9 letters long.
+
+Attempt 4 of 6 
+Letters left: a b c d e f g h i j k l m n o p q r s t u v w x y z 
+Guess: melon 
+Invalid guess. Your word must be 9 letters long.
+
+Attempt 5 of 6 
+Letters left: a b c d e f g h i j k l m n o p q r s t u v w x y z 
+Guess: berry 
+Invalid guess. Your word must be 9 letters long.
+
+Attempt 6 of 6 
+Letters left: a b c d e f g h i j k l m n o p q r s t u v w x y z 
+Guess: table 
+Invalid guess. Your word must be 9 letters long.
+
+Game over! The correct word was: REPORTERS 
+NULL</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
 </div>
 </div>
 </section>

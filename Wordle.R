@@ -1,70 +1,29 @@
----
-title: "Program a Word Game"
-format: html
----
-### Load packages
-```{r}
 library(readr)
-```
 
-### Load data files
-
-```{r}
 f1 <- "https://raw.githubusercontent.com/difiore/ada-datasets/refs/heads/main/collins-scrabble-words-2019.txt"
 
 f2 <- "https://raw.githubusercontent.com/difiore/ada-datasets/refs/heads/main/google-10000-english-usa-no-swears.txt"
-```
 
-```R
-s <- read_csv(f1, col_names = TRUE)
-g <- read_csv(f2, col_names = TRUE)
-```
-### Step 1: Defining and Using load_dictionary()
-```{r}
 #this function takes a single argument "filename" that can be used to read either data files s or g.
 load_dictionary <- function(file_name) { #takes one argument "file_name"
   read_csv(file_name, col_names = TRUE) #reads file
 }
-```
 
-```{r}
 valid_list <- load_dictionary(f1) #variable valid_list assigned to function that reads in f1
 solution_list <- load_dictionary(f2) #variable solution_list assigned to function that reads in f2
-```
 
-```R
-str(valid_list)
-str(solution_list)
-```
-
-### Step 2: Filtering solution_list with intersection()
-```R
-solution_list <- intersect(solution_list, valid_list) #this is currently not working, my solution list comes up as 0
-length(solution_list)
-```
-```{r}
 class(solution_list)
 class(valid_list)
-```
- 
-The two lists are currently data frames intersect() Performs set union, intersection, (asymmetric!) difference, equality and membership on two vectors. So the lists need to be converted from data frames to vectors
 
-```{r}
 #converts columns from solution_list and valid_list into vector while extracting column name words
 solution_list <- as.character(solution_list$words) 
 valid_list <- as.character(valid_list$words) 
-```
 
-```{r}
 solution_list <- intersect(solution_list, valid_list) #finds common words between both lists and intersects them into new list as a vector
 length(solution_list) #length of new list
-```
 
-```R
-solution_list #does not display my output in Quarto documnet because of length, but used to check what my list looks like
-```
-### Step 3: Selecting and Splitting a Random Solution Word
-```{r}
+
+
 #This function takes two arguments word_list: list of words, and word_length: the length of words we want
 pick_solution <- function(word_list, word_length = 5) {
   
@@ -79,66 +38,70 @@ pick_solution <- function(word_list, word_length = 5) {
   
   return(split_word)
 }
-```
 
-```{r}
-#testing pick_solution() function
+
 solution_test <- pick_solution(solution_list)
 print(solution_test)
-```
 
-### Step 4: THE WORDLE GAME
 
-Websites used:
-https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/cat
-https://www.geeksforgeeks.org/r-program-to-print-a-new-line-in-string/
-https://stackoverflow.com/questions/73523520/guessing-game-in-r
-https://www.programiz.com/r/repeat-loop
-
-```{r}
 #this function takes three arguments: 1) the solution, 2) valid guesses, and 3) number of guesses allowed
 play_wordle <- function(solution, valid_list, num_guesses = 6){
+  #explain rules of the game to the player
   cat("Welcome to Wordle\n")
   cat("You have", num_guesses, "chances to guess a word of length", nchar(solution), ".\n")
   
+  #available letters
   letters_left <- letters
-  guess_history <- c()
   
-  test_guesses <- c("apple", "grape", "peach", "melon", "berry", "table")  # Example guesses
+  #store guesses
+  guess_history <- c() #an empty list to store past guesses
   
+  #start the game loop
   for (i in 1:num_guesses) {
     cat("\nAttempt", i, "of", num_guesses, "\n")
-    cat("Letters left:", paste(letters_left, collapse = " "), "\n")
+    cat("Letters left:", paste(letters_left, collapse = " "), "\n") #convert to lowercase
     
-    # Instead of readline(), use predefined test guesses
-    guess <- test_guesses[i]
-    cat("Guess:", guess, "\n")  # Show the test guess
-
-    if (nchar(guess) != nchar(solution)) {
-      cat("Invalid guess. Your word must be", nchar(solution), "letters long.\n")
-    } else if (!(guess %in% valid_list)) {
-      cat("Invalid guess. Word not in valid list.\n")
-    } else {
-      guess_history <- c(guess_history, guess)
-      feedback <- evaluate_guess(guess, solution)
-      cat("Feedback:", feedback, "\n")
-      letters_left <- setdiff(letters_left, strsplit(guess, "")[[1]])
+    repeat { #keep asking until valid guess is given
+      guess <- tolower(readline(prompt = "Enter your guess: ")) #convert to lowercase
       
-      if (guess == solution) {
-        cat("\nCongratulations! You guessed the word!\n")
-        print(guess_history)
-        return(TRUE)
+      if (nchar(guess) != nchar(solution)) {
+        cat("Invalid guess. Your word must be", nchar(solution), "letters long.\n")
+      } else if (!(guess %in% valid_list)) {
+        cat("Invalid guess. Word not in valid list.\n")
+      } else {
+        break
       }
+    }
+    
+    #Store guess in history
+    guess_history <- c(guess_history, guess)
+    
+    #Call evaluate_guess() (will define this function next)
+    feedback <- evaluate_guess(guess, solution)
+    
+    #Show feedback
+    cat("Feedback:", feedback, "\n")
+    
+    #Update available letters
+    letters_left <- setdiff(letters_left, strsplit(guess, "")[[1]])
+    
+    #Check if the guess is correct
+    if (guess == solution) {
+      cat("\nCongratulations! You guessed the word!\n")
+      cat("Your guesses:\n")
+      print(guess_history)
+      return(TRUE)  # Game over - player won
     }
   }
   
+  #if the player runs out of guesses, show the correct word
   cat("\nGame over! The correct word was:", solution, "\n")
+  cat("Your guesses:\n")
   print(guess_history)
-  return(FALSE)
+  return(FALSE)  # Game over - player lost
+  
 }
-```
 
-```{r}
 evaluate_guess <- function(guess, solution) {
   #Create an empty feedback list with "-"
   feedback <- rep("-", nchar(solution))
@@ -159,12 +122,9 @@ evaluate_guess <- function(guess, solution) {
   #Convert feedback list to a string
   return(paste(feedback, collapse = " "))
 }
-```
 
-```{r}
 # Pick a random solution word from your solution_list
 solution_word <- sample(solution_list, 1)
 
 # Start the game
-play_wordle(solution_word, valid_list, num_guesses = 6)
-```
+play_wordle(solution_word, valid_list)
