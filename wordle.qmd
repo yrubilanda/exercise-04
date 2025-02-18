@@ -98,43 +98,60 @@ https://www.programiz.com/r/repeat-loop
 ```{r}
 #this function takes three arguments: 1) the solution, 2) valid guesses, and 3) number of guesses allowed
 play_wordle <- function(solution, valid_list, num_guesses = 6){
+  #explain rules of the game to the player
   cat("Welcome to Wordle\n")
   cat("You have", num_guesses, "chances to guess a word of length", nchar(solution), ".\n")
   
+  #available letters
   letters_left <- letters
-  guess_history <- c()
   
-  test_guesses <- c("apple", "grape", "peach", "melon", "berry", "table")  # Example guesses
+  #store guesses
+  guess_history <- c() #an empty list to store past guesses
   
+  #start the game loop
   for (i in 1:num_guesses) {
     cat("\nAttempt", i, "of", num_guesses, "\n")
-    cat("Letters left:", paste(letters_left, collapse = " "), "\n")
+    cat("Letters left:", paste(letters_left, collapse = " "), "\n") #convert to lowercase
     
-    # Instead of readline(), use predefined test guesses
-    guess <- test_guesses[i]
-    cat("Guess:", guess, "\n")  # Show the test guess
-
-    if (nchar(guess) != nchar(solution)) {
-      cat("Invalid guess. Your word must be", nchar(solution), "letters long.\n")
-    } else if (!(guess %in% valid_list)) {
-      cat("Invalid guess. Word not in valid list.\n")
-    } else {
-      guess_history <- c(guess_history, guess)
-      feedback <- evaluate_guess(guess, solution)
-      cat("Feedback:", feedback, "\n")
-      letters_left <- setdiff(letters_left, strsplit(guess, "")[[1]])
+    repeat { #keep asking until valid guess is given
+      guess <- tolower(readline(prompt = "Enter your guess: ")) #convert to lowercase
       
-      if (guess == solution) {
-        cat("\nCongratulations! You guessed the word!\n")
-        print(guess_history)
-        return(TRUE)
+      if (nchar(guess) != nchar(solution)) {
+        cat("Invalid guess. Your word must be", nchar(solution), "letters long.\n")
+      } else if (!(guess %in% valid_list)) {
+        cat("Invalid guess. Word not in valid list.\n")
+      } else {
+        break
       }
+    }
+    
+    #Store guess in history
+    guess_history <- c(guess_history, guess)
+    
+    #Call evaluate_guess() (will define this function next)
+    feedback <- evaluate_guess(guess, solution)
+    
+    #Show feedback
+    cat("Feedback:", feedback, "\n")
+    
+    #Update available letters
+    letters_left <- setdiff(letters_left, strsplit(guess, "")[[1]])
+    
+    #Check if the guess is correct
+    if (guess == solution) {
+      cat("\nCongratulations! You guessed the word!\n")
+      cat("Your guesses:\n")
+      print(guess_history)
+      return(TRUE)  # Game over - player won
     }
   }
   
+  #if the player runs out of guesses, show the correct word
   cat("\nGame over! The correct word was:", solution, "\n")
+  cat("Your guesses:\n")
   print(guess_history)
-  return(FALSE)
+  return(FALSE)  # Game over - player lost
+  
 }
 ```
 
