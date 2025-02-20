@@ -125,18 +125,6 @@ play_wordle <- function(solution, valid_list, num_guesses = 6){
       }
     }
     
-    #Store guess in history
-    guess_history <- c(guess_history, guess)
-    
-    #Call evaluate_guess() (will define this function next)
-    feedback <- evaluate_guess(guess, solution)
-    
-    #Show feedback
-    cat("Feedback:", feedback, "\n")
-    
-    #Update available letters
-    letters_left <- setdiff(letters_left, strsplit(guess, "")[[1]])
-    
     #Check if the guess is correct
     if (guess == solution) {
       cat("\nCongratulations! You guessed the word!\n")
